@@ -46,7 +46,7 @@
 
 1. **الـ AI يجلب FormScript داخل مجلد المشروع:**
    ```bash
-   git clone https://github.com/<YOUR_USER>/FormScript.git formscript
+   git clone https://github.com/xlr9/FormScript.git formscript
    ```
 2. **الـ AI يحدد لغتك:** إذا كنت تتحدث بالعربية، يكتب الأسئلة بالعربية تلقائياً.
 3. **الـ AI ينشئ ملف الأسئلة:** يحفظه داخل `formscript/questions/feature_xyz.txt`.

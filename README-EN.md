@@ -46,7 +46,7 @@ If you are inside any project (e.g. `Project ABC`) and tell the AI:
 
 1. **AI clones or navigates into FormScript:**
    ```bash
-   git clone https://github.com/<YOUR_USER>/FormScript.git formscript
+   git clone https://github.com/xlr9/FormScript.git formscript
    ```
 2. **AI detects your language:** If you chatted in Arabic, it writes Arabic; if English, it writes English.
 3. **AI creates questions file:** It generates `formscript/questions/feature_xyz.txt`.

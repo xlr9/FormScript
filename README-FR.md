@@ -46,7 +46,7 @@ Dans n'importe quel projet (ex: `Projet ABC`), dites à votre agent IA :
 
 1. **L'IA intègre FormScript :**
    ```bash
-   git clone https://github.com/<VOTRE_UTILISATEUR>/FormScript.git formscript
+   git clone https://github.com/xlr9/FormScript.git formscript
    ```
 2. **L'IA adapte la langue :** Si vous échangez en français, elle rédige les questions en français.
 3. **L'IA génère le fichier de questions :** Elle l'enregistre dans `formscript/questions/fonctionnalite_xyz.txt`.

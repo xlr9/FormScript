@@ -15,8 +15,12 @@
     "clarification",
     "workflow"
   ],
-  "author": "",
+  "author": "xlr9",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xlr9/FormScript.git"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2"
