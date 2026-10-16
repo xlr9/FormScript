@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FormScript | AI Requirements & Clarification Bridge</title>
+  
+  <!-- Fonts: Inter for English/French, Cairo for Arabic, JetBrains Mono for code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1 class="brand-title">FormScript <span class="badge-pro">AI Bridge</span></h1>
+          <p class="brand-subtitle" data-i18n="brand_subtitle">Transform AI questions into an interactive high-precision form</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Language Switcher Selector -->
+        <div class="lang-selector-wrapper">
+          <span class="lang-icon">🌐</span>
+          <select id="langSelect" class="lang-selector" aria-label="Select Language">
+            <option value="en">English (US)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="fr">Français (French)</option>
+          </select>
+        </div>
+
+        <!-- AI Prompt Generator Button -->
+        <button id="btnAiPrompt" class="btn btn-secondary" title="Copy prompt template for AI to generate questions">
+          <span class="btn-icon">🤖</span>
+          <span data-i18n="btn_ai_prompt">AI Prompt Template</span>
+        </button>
+
+        <!-- New File / Paste Button -->
+        <button id="btnNewFile" class="btn btn-accent">
+          <span class="btn-icon">➕</span>
+          <span data-i18n="btn_new_file">New Questions File</span>
+        </button>
+
+        <!-- Toggle Sidebar on Mobile -->
+        <button id="btnToggleSidebar" class="btn btn-icon-only mobile-only" title="Toggle Files List">
+          📁
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="workspace-grid">
+      
+      <!-- Files Manager Sidebar -->
+      <aside class="sidebar-panel" id="sidebarPanel">
+        <div class="sidebar-header">
+          <div class="sidebar-title-row">
+            <h2 class="sidebar-title">
+              <span class="icon">📁</span> <span data-i18n="sidebar_title">Questions Directory</span>
+              <span id="filesCountBadge" class="counter-badge">0</span>
+            </h2>
+            <button id="btnRefreshFiles" class="btn-icon-subtle" title="Refresh files list">
+              🔄
+            </button>
+          </div>
+          <p class="sidebar-hint" data-i18n="sidebar_hint">Files located inside <code>/questions</code></p>
+        </div>
+
+        <!-- Files List Container -->
+        <div class="files-list-wrapper">
+          <div id="filesList" class="files-list">
+            <!-- Dynamically populated files -->
+            <div class="loading-state" data-i18n="loading_files">Loading files...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="folder-status-box">
+            <span class="status-indicator online"></span>
+            <span data-i18n="sync_active">Live sync active with questions/</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center & Right: Main Form & Answers Area -->
+      <main class="main-content">
+
+        <!-- Active File Meta Bar -->
+        <div class="active-file-bar">
+          <div class="file-meta-info">
+            <span class="file-icon">📄</span>
+            <div>
+              <div class="file-meta-title-row">
+                <h3 id="currentFileName" class="active-file-name" data-i18n="no_file_selected">No file selected</h3>
+                <span id="questionsCountChip" class="chip chip-info">0 questions</span>
+              </div>
+              <span id="fileLastModified" class="file-date" data-i18n="select_file_hint">Select a file from the sidebar or add new questions to begin</span>
+            </div>
+          </div>
+
+          <div class="active-file-actions">
+            <button id="btnEditRaw" class="btn btn-sm btn-outline" title="Edit raw questions text">
+              ✏️ <span data-i18n="btn_edit_raw">Edit Text</span>
+            </button>
+            <button id="btnDeleteFile" class="btn btn-sm btn-danger-outline" title="Delete this file">
+              🗑️ <span data-i18n="btn_delete_file">Delete</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="progress-section">
+          <div class="progress-info-row">
+            <span class="progress-label" data-i18n="progress_label">Answers Completion:</span>
+            <span id="progressText" class="progress-stat">0 / 0 (0%)</span>
+          </div>
+          <div class="progress-track">
+            <div id="progressBar" class="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Form Questions Container -->
+        <div id="questionsContainer" class="questions-container">
+          <!-- Dynamically generated questions render here -->
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3 data-i18n="empty_title">No questions currently displayed</h3>
+            <p data-i18n="empty_subtitle">Select a ready file from the sidebar or click "New Questions File" to paste from your AI.</p>
+          </div>
+        </div>
+
+        <!-- Bottom Action Bar / Result Drawer -->
+        <div class="output-preview-section" id="outputSection">
+          <div class="output-header">
+            <div class="output-title">
+              <span class="icon">✨</span>
+              <h4 data-i18n="output_title">AI-Ready Formatted Specifications</h4>
+            </div>
+            <div class="output-controls">
+              <button id="btnSaveAnswers" class="btn btn-sm btn-subtle" title="Save backup into answers/ folder">
+                💾 <span data-i18n="btn_save_backup">Save to answers/</span>
+              </button>
+              <button id="btnResetAnswers" class="btn btn-sm btn-subtle text-danger" title="Clear all selections">
+                🔄 <span data-i18n="btn_reset_answers">Reset</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="output-box-wrapper">
+            <textarea id="outputPreviewText" class="output-textarea" readonly placeholder="Your selected answers will be formatted here live as you click options..."></textarea>
+          </div>
+
+          <div class="copy-action-row">
+            <button id="btnCopyResult" class="btn btn-primary btn-lg btn-copy">
+              <span class="copy-icon">📋</span>
+              <span class="copy-text" data-i18n="btn_copy_result">Copy Full Result to AI</span>
+            </button>
+            <div id="copySuccessAlert" class="copy-feedback-toast" data-i18n="copy_success_alert">
+              ✅ Copied to clipboard! Now paste it directly in your AI chat.
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Modal 1: New File / Quick Paste -->
+  <div id="modalNewFile" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="modal_new_title">📝 Add New Questions File</h3>
+        <button class="modal-close" id="btnCloseNewModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="newFileNameInput" class="form-label" data-i18n="modal_new_filename_label">File Name (optional, e.g. <code>project_specs.txt</code>):</label>
+          <input type="text" id="newFileNameInput" class="form-input" placeholder="project_specs.txt">
+        </div>
+        <div class="form-group">
+          <div class="label-with-hint">
+            <label for="newFileContentInput" class="form-label" data-i18n="modal_new_content_label">Questions and Choices Content:</label>
+            <span class="hint-tag" data-i18n="modal_new_hint">Supports any language, numbers, and bullets</span>
+          </div>
+          <textarea id="newFileContentInput" class="form-textarea" rows="10" placeholder="Paste questions here as generated by the AI in any language..."></textarea>
+        </div>
+        <div class="format-sample-callout">
+          <strong data-i18n="modal_sample_title">💡 Supported Format Example (Any Language):</strong>
+          <pre>1. What database do you prefer?
+- PostgreSQL
+- MongoDB
+- Other
+
+2. Do you need OAuth login? (multiple)
+- Google
+- GitHub
+- Other</pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelNewModal" class="btn btn-outline" data-i18n="btn_cancel">Cancel</button>
+        <button id="btnSaveNewFile" class="btn btn-accent" data-i18n="btn_save_and_open">💾 Save & Open Form</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit Raw Content -->
+  <div id="modalEditRaw" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="modal_edit_title">✏️ Edit Raw Questions Text</h3>
+        <button class="modal-close" id="btnCloseEditModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtext" data-i18n="modal_edit_subtext">Saving your edits will directly update the file on the server and re-parse the form.</p>
+        <textarea id="editRawTextarea" class="form-textarea code-font" rows="14"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelEditModal" class="btn btn-outline" data-i18n="btn_cancel">Cancel</button>
+        <button id="btnSaveEditRaw" class="btn btn-accent" data-i18n="btn_save_changes">💾 Save Changes & Reload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: AI Prompt Generator Helper -->
+  <div id="modalAiPrompt" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" data-i18n="modal_ai_prompt_title">🤖 AI Prompt Directive Template</h3>
+        <button class="modal-close" id="btnCloseAiPromptModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-subtext" data-i18n="modal_ai_prompt_subtext">Copy this instruction and paste it to your AI (ChatGPT, Claude, Cursor, Antigravity) to have it generate the questions in FormScript format automatically in your language:</p>
+        <div class="prompt-box-card">
+          <textarea id="aiPromptTemplateText" class="form-textarea code-font" rows="8" readonly></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCopyAiPrompt" class="btn btn-primary" data-i18n="btn_copy_prompt">
+          📋 Copy Prompt to Clipboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
